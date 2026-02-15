@@ -2,6 +2,7 @@ using OmniRecall.Api.Endpoints;
 using OmniRecall.Api.Services;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using OmniRecall.Api.Contracts;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,6 +25,9 @@ builder.Services.AddCors(options =>
         }
     });
 });
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.Configure<AiRoutingOptions>(builder.Configuration.GetSection("AiRouting"));
 builder.Services.Configure<IngestionOptions>(builder.Configuration.GetSection("Ingestion"));
@@ -54,6 +58,7 @@ builder.Services.AddScoped<IEmbeddingClient>(sp =>
 builder.Services.AddScoped<IDocumentIngestionService, DocumentIngestionService>();
 builder.Services.AddScoped<IRecallSearchService, RecallSearchService>();
 builder.Services.AddScoped<IChatOrchestrationService, ChatOrchestrationService>();
+builder.Services.AddScoped<IHealthProbeService, HealthProbeService>();
 builder.Services.AddScoped<AiChatRouter>(sp =>
 {
     var options = sp.GetRequiredService<Microsoft.Extensions.Options.IOptions<AiRoutingOptions>>().Value;
@@ -66,6 +71,8 @@ builder.Services.AddScoped<AiChatRouter>(sp =>
 var app = builder.Build();
 
 app.UseCors("AppCors");
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseExceptionHandler(errorApp =>
 {
@@ -94,8 +101,18 @@ app.UseExceptionHandler(errorApp =>
 app.MapChatEndpoints();
 app.MapDocumentEndpoints();
 app.MapRecallEndpoints();
-app.MapGet("/health", () => Results.Ok(new { status = "healthy", timestamp = DateTime.UtcNow }))
-    .WithTags("Health");
+app.MapGet("/health", async (IHealthProbeService healthProbeService, CancellationToken cancellationToken) =>
+{
+    var report = await healthProbeService.ProbeAsync(cancellationToken);
+    var statusCode = string.Equals(report.Status, "unhealthy", StringComparison.OrdinalIgnoreCase)
+        ? StatusCodes.Status503ServiceUnavailable
+        : StatusCodes.Status200OK;
+
+    return Results.Json(report, statusCode: statusCode);
+})
+    .WithTags("Health")
+    .Produces<HealthResponseDto>(StatusCodes.Status200OK)
+    .Produces<HealthResponseDto>(StatusCodes.Status503ServiceUnavailable);
 
 app.Run();
 

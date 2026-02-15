@@ -153,6 +153,10 @@ dotnet run --project src/OmniRecall.Api
 cd src/OmniRecall.App && npm start
 ```
 
+Useful local API URLs:
+- Swagger UI: `http://localhost:5169/swagger`
+- Health report: `http://localhost:5169/health`
+
 Frontend dev proxy:
 - `src/OmniRecall.App/proxy.conf.json` forwards `/api` to `http://localhost:5169`
 
@@ -176,6 +180,7 @@ Configure keys in `src/OmniRecall.Api/appsettings.json` or environment variables
 - `Ocr__Endpoint` (when OCR provider is Azure)
 - `Ocr__Key` (when OCR provider is Azure)
 - `Cors__AllowedOriginsCsv` (for deployed frontend origin(s), comma-separated)
+- `Health__ProbeExternalAi` (`true` to perform live endpoint probes for Gemini/GitHub Models in `/health`)
 
 Optional Azure integration smoke test env vars:
 - `AZURE_COSMOS_CONNECTION_STRING`
