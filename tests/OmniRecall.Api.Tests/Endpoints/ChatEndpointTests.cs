@@ -66,6 +66,8 @@ public class ChatEndpointTests
                 builder.ConfigureServices(services =>
                 {
                     services.RemoveAll<AiChatRouter>();
+                    services.RemoveAll<IEmbeddingClient>();
+                    services.AddSingleton<IEmbeddingClient>(new DeterministicEmbeddingClient([0.2f, 0.8f, 0.4f]));
                     services.AddScoped(_ =>
                     {
                         var primary = StubAiChatClient.WithResponses(
@@ -154,5 +156,13 @@ internal sealed class ThrowingChatOrchestrationService : IChatOrchestrationServi
     public Task<ChatResponseDto> CompleteAsync(string prompt, int topK, CancellationToken cancellationToken = default)
     {
         throw new InvalidOperationException("boom");
+    }
+}
+
+internal sealed class DeterministicEmbeddingClient(IReadOnlyList<float> vector) : IEmbeddingClient
+{
+    public Task<EmbeddingResult> EmbedAsync(string text, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(new EmbeddingResult(vector, EmbeddingStatus.Success, "test"));
     }
 }
