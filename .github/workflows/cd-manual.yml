@@ -18,6 +18,10 @@ on:
         required: false
         type: string
 
+permissions:
+  id-token: write
+  contents: read
+
 jobs:
   build:
     name: Build Artifacts
@@ -47,7 +51,18 @@ jobs:
         working-directory: src/OmniRecall.App
 
       - name: Build app
-        run: npm run build
+        env:
+          FRONTEND_API_URL: ${{ secrets.FRONTEND_API_URL }}
+        run: |
+          API_URL="${FRONTEND_API_URL:-/api}"
+          SAFE_API_URL="${API_URL//\'/\\\'}"
+          cat > src/environments/environment.production.ts <<EOF
+          export const environment = {
+            production: true,
+            apiBaseUrl: '${SAFE_API_URL}',
+          };
+          EOF
+          npm run build
         working-directory: src/OmniRecall.App
 
       - name: Upload API artifact
@@ -83,12 +98,31 @@ jobs:
             exit 1
           fi
 
-      - name: Deploy API package
-        uses: azure/webapps-deploy@v3
+      - name: Package API artifact
+        run: |
+          cd ./api-publish
+          zip -r ../api-publish.zip .
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
         with:
-          app-name: ${{ inputs.api_app_name }}
-          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: ./api-publish
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy API package
+        env:
+          AZURE_WEBAPP_RESOURCE_GROUP: ${{ secrets.AZURE_WEBAPP_RESOURCE_GROUP }}
+        run: |
+          if [ -z "$AZURE_WEBAPP_RESOURCE_GROUP" ]; then
+            echo "AZURE_WEBAPP_RESOURCE_GROUP secret is required for API deployment."
+            exit 1
+          fi
+          az webapp deploy \
+            --resource-group "$AZURE_WEBAPP_RESOURCE_GROUP" \
+            --name "${{ inputs.api_app_name }}" \
+            --src-path ./api-publish.zip \
+            --type zip
 
   deploy-frontend:
     name: Deploy Frontend

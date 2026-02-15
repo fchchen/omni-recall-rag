@@ -175,6 +175,7 @@ Configure keys in `src/OmniRecall.Api/appsettings.json` or environment variables
 - `AzureCosmos__ConnectionString`
 - `Ocr__Endpoint` (when OCR provider is Azure)
 - `Ocr__Key` (when OCR provider is Azure)
+- `Cors__AllowedOriginsCsv` (for deployed frontend origin(s), comma-separated)
 
 Optional Azure integration smoke test env vars:
 - `AZURE_COSMOS_CONNECTION_STRING`
@@ -198,10 +199,16 @@ Two GitHub Actions workflows are included:
 
 ### Required GitHub Secrets
 
-- `AZURE_WEBAPP_PUBLISH_PROFILE`
-  - Publish profile for your Azure API app (App Service or Function App)
+- `AZURE_CLIENT_ID`
+- `AZURE_TENANT_ID`
+- `AZURE_SUBSCRIPTION_ID`
+- `AZURE_WEBAPP_RESOURCE_GROUP`
+  - Used by OIDC login and `az webapp deploy` for API deployment
 - `AZURE_STATIC_WEB_APPS_API_TOKEN`
   - Deployment token for your Azure Static Web App
+- `FRONTEND_API_URL` (recommended)
+  - Example: `https://<your-api-app>.azurewebsites.net/api`
+  - If not set, frontend defaults to `/api`
 
 ### Manual CD Usage
 
@@ -211,5 +218,7 @@ Two GitHub Actions workflows are included:
    - `deploy_api`: true/false
    - `deploy_frontend`: true/false
 4. If `deploy_api=true`, set `api_app_name` to your Azure app name.
+5. In Azure App Service configuration, set:
+   - `Cors__AllowedOriginsCsv=https://<your-static-web-app-domain>`
 
 This gives you CI on every change and manual, controlled Azure deployments for free-tier usage.

@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import {
   ChatResponse,
   DocumentChunkPreview,
@@ -13,7 +14,7 @@ import {
 @Injectable({ providedIn: 'root' })
 export class OmniRecallApiService {
   private readonly http = inject(HttpClient);
-  private readonly apiBase = '/api';
+  private readonly apiBase = this.resolveApiBase(environment.apiBaseUrl);
 
   uploadDocument(file: File, sourceType = 'file'): Observable<UploadDocumentResponse> {
     const formData = new FormData();
@@ -49,5 +50,14 @@ export class OmniRecallApiService {
       `${this.apiBase}/documents/${encodeURIComponent(documentId)}/reindex`,
       {}
     );
+  }
+
+  private resolveApiBase(configured: string): string {
+    const normalized = (configured ?? '').trim();
+    if (!normalized) {
+      return '/api';
+    }
+
+    return normalized.replace(/\/+$/, '');
   }
 }

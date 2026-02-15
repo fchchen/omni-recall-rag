@@ -5,6 +5,26 @@ using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var corsOrigins = (builder.Configuration["Cors:AllowedOriginsCsv"] ?? string.Empty)
+    .Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+    .Where(origin => !string.IsNullOrWhiteSpace(origin))
+    .Distinct(StringComparer.OrdinalIgnoreCase)
+    .ToArray();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AppCors", policy =>
+    {
+        if (corsOrigins.Length > 0)
+        {
+            policy
+                .WithOrigins(corsOrigins)
+                .AllowAnyHeader()
+                .AllowAnyMethod();
+        }
+    });
+});
+
 builder.Services.Configure<AiRoutingOptions>(builder.Configuration.GetSection("AiRouting"));
 builder.Services.Configure<IngestionOptions>(builder.Configuration.GetSection("Ingestion"));
 builder.Services.Configure<ChatQualityOptions>(builder.Configuration.GetSection("ChatQuality"));
@@ -44,6 +64,8 @@ builder.Services.AddScoped<AiChatRouter>(sp =>
 });
 
 var app = builder.Build();
+
+app.UseCors("AppCors");
 
 app.UseExceptionHandler(errorApp =>
 {
