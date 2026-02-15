@@ -14,7 +14,10 @@ public sealed class GeminiChatClient(
     private const string DefaultModel = "gemini-2.5-flash";
     private static readonly string[] DefaultFallbackModels =
     [
-        "gemini-2.5-flash-lite"
+        "gemini-2.5-flash-lite",
+        "gemini-flash-latest",
+        "gemini-flash-lite-latest",
+        "gemini-3-flash-preview"
     ];
 
     public string ProviderName => "gemini";
