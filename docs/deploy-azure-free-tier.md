@@ -103,3 +103,15 @@ The workflow:
 - Free tier throttling/timeouts:
   - Expected under burst traffic; retry and reduce concurrent usage.
 
+## 8) Optional post-deploy smoke test workflow
+
+Use GitHub Actions -> `Smoke Test Azure Deploy`:
+
+- `api_base_url`: `https://<your-api-app-name>.azurewebsites.net`
+- `frontend_origin` (optional): `https://<your-static-web-app-domain>`
+
+It validates:
+
+- `GET /health` returns `200`
+- `GET /api/documents` returns `200`
+- CORS header matches frontend origin (when provided)

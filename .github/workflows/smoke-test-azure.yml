@@ -1,0 +1,78 @@
+name: Smoke Test Azure Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "API base URL (example: https://my-api.azurewebsites.net)"
+        required: true
+        type: string
+      frontend_origin:
+        description: "Optional frontend origin for CORS check (example: https://red-rock-123.azurestaticapps.net)"
+        required: false
+        type: string
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run smoke checks
+        shell: bash
+        env:
+          API_BASE_URL: ${{ inputs.api_base_url }}
+          FRONTEND_ORIGIN: ${{ inputs.frontend_origin }}
+        run: |
+          set -euo pipefail
+
+          API_BASE_URL="${API_BASE_URL%/}"
+          if [ -z "$API_BASE_URL" ]; then
+            echo "api_base_url is required."
+            exit 1
+          fi
+
+          echo "Checking API: $API_BASE_URL"
+
+          health_code=$(curl -sS -o /tmp/health.json -w "%{http_code}" "$API_BASE_URL/health")
+          echo "GET /health -> $health_code"
+          if [ "$health_code" != "200" ]; then
+            echo "Expected 200 from /health"
+            cat /tmp/health.json || true
+            exit 1
+          fi
+          if ! grep -qi '"status"' /tmp/health.json; then
+            echo "Unexpected /health response body:"
+            cat /tmp/health.json
+            exit 1
+          fi
+
+          docs_code=$(curl -sS -o /tmp/docs.json -w "%{http_code}" "$API_BASE_URL/api/documents")
+          echo "GET /api/documents -> $docs_code"
+          if [ "$docs_code" != "200" ]; then
+            echo "Expected 200 from /api/documents"
+            cat /tmp/docs.json || true
+            exit 1
+          fi
+          if ! grep -q "^\[" /tmp/docs.json; then
+            echo "Unexpected /api/documents response body:"
+            cat /tmp/docs.json
+            exit 1
+          fi
+
+          if [ -n "${FRONTEND_ORIGIN:-}" ]; then
+            echo "Checking CORS for origin: $FRONTEND_ORIGIN"
+            allow_origin=$(
+              curl -sS -D - -o /dev/null \
+                -H "Origin: $FRONTEND_ORIGIN" \
+                "$API_BASE_URL/health" \
+              | tr -d '\r' \
+              | awk -F': ' 'tolower($1)=="access-control-allow-origin"{print $2}' \
+              | tail -n 1
+            )
+
+            if [ "$allow_origin" != "$FRONTEND_ORIGIN" ]; then
+              echo "CORS check failed. access-control-allow-origin='$allow_origin'"
+              exit 1
+            fi
+          fi
+
+          echo "Smoke tests passed."

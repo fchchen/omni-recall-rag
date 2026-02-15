@@ -196,6 +196,9 @@ Two GitHub Actions workflows are included:
   - Triggered manually with `workflow_dispatch`
   - Optional API deploy
   - Optional frontend deploy
+- Smoke test (manual): `.github/workflows/smoke-test-azure.yml`
+  - Checks deployed API `/health` and `/api/documents`
+  - Optional CORS verification against your frontend origin
 
 ### Required GitHub Secrets
 
