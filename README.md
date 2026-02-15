@@ -222,3 +222,6 @@ Two GitHub Actions workflows are included:
    - `Cors__AllowedOriginsCsv=https://<your-static-web-app-domain>`
 
 This gives you CI on every change and manual, controlled Azure deployments for free-tier usage.
+
+Detailed runbook:
+- `docs/deploy-azure-free-tier.md`
