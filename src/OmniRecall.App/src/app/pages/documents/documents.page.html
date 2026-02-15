@@ -1,0 +1,69 @@
+<section class="panel">
+  <header class="header">
+    <div>
+      <h2>Documents</h2>
+      <p class="hint">Browse uploaded files, inspect chunks, delete, and reindex embeddings.</p>
+    </div>
+    <button (click)="refreshDocuments()" [disabled]="loading">
+      {{ loading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </header>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="ok" *ngIf="actionMessage">{{ actionMessage }}</p>
+  <section class="metrics" *ngIf="lastReindex as m">
+    <h3>Last Reindex Metrics</h3>
+    <div class="metric-grid">
+      <p><strong>Total:</strong> {{ m.chunkCount }}</p>
+      <p><strong>Embedded:</strong> {{ m.embeddedCount }}</p>
+      <p><strong>Rate-limited:</strong> {{ m.rateLimitedCount }}</p>
+      <p><strong>Empty:</strong> {{ m.emptyCount }}</p>
+      <p><strong>Failed:</strong> {{ m.failedCount }}</p>
+    </div>
+  </section>
+
+  <div class="layout">
+    <aside class="docs-list">
+      <h3>Uploaded</h3>
+      <ul>
+        <li *ngFor="let doc of documents">
+          <button
+            class="doc-btn"
+            [class.active]="selectedDocument?.documentId === doc.documentId"
+            (click)="openDocument(doc)">
+            <strong>{{ doc.fileName }}</strong>
+            <span>{{ doc.chunkCount }} chunks</span>
+          </button>
+        </li>
+      </ul>
+      <p class="hint" *ngIf="documents.length === 0">No documents uploaded yet.</p>
+    </aside>
+
+    <section class="details" *ngIf="selectedDocument as doc; else emptyState">
+      <header class="details-head">
+        <h3>{{ doc.fileName }}</h3>
+        <div class="actions">
+          <button class="ghost" (click)="reindexSelected()" [disabled]="loading">Reindex</button>
+          <button class="danger" (click)="deleteSelected()" [disabled]="loading">Delete</button>
+        </div>
+      </header>
+
+      <ul class="chunks">
+        <li *ngFor="let chunk of chunks">
+          <header>
+            <strong>Chunk {{ chunk.chunkIndex }}</strong>
+            <span>{{ chunk.hasEmbedding ? 'embedded' : 'no embedding' }}</span>
+          </header>
+          <p>{{ chunk.snippet }}</p>
+        </li>
+      </ul>
+      <p class="hint" *ngIf="chunks.length === 0 && !loading">No chunks found for this document.</p>
+    </section>
+  </div>
+</section>
+
+<ng-template #emptyState>
+  <section class="details empty">
+    <p>Select a document to inspect chunks.</p>
+  </section>
+</ng-template>

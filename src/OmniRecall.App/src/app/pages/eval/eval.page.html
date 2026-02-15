@@ -1,0 +1,114 @@
+<section class="panel">
+  <header class="header">
+    <div>
+      <h2>Eval Harness</h2>
+      <p class="hint">Run repeatable recall/chat checks. Edit cases and they are saved locally in this browser.</p>
+    </div>
+    <div class="actions">
+      <button class="ghost" (click)="resetDefaults()" [disabled]="isRunning">Reset Defaults</button>
+      <button class="ghost" (click)="autoGenerateCases()" [disabled]="isRunning">Auto Generate</button>
+      <button (click)="runAll()" [disabled]="isRunning || cases.length === 0">
+        {{ isRunning ? 'Running...' : 'Run All' }}
+      </button>
+    </div>
+  </header>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+  <p class="ok" *ngIf="info">{{ info }}</p>
+
+  <div class="summary" *ngIf="results.length > 0">
+    <p><strong>Total:</strong> {{ results.length }}</p>
+    <p><strong>Pass:</strong> {{ passCount() }}</p>
+    <p><strong>Partial:</strong> {{ partialCount() }}</p>
+    <p><strong>Fail/Error:</strong> {{ failCount() }}</p>
+  </div>
+
+  <section class="cases">
+    <header>
+      <h3>Cases</h3>
+      <button class="ghost" (click)="addCase()" [disabled]="isRunning">Add Case</button>
+    </header>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Question</th>
+            <th>Expected File</th>
+            <th>TopK</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of cases; index as i">
+            <td>{{ i + 1 }}</td>
+            <td>
+              <textarea
+                rows="2"
+                [(ngModel)]="c.question"
+                (ngModelChange)="onCasesChanged()"
+                [disabled]="isRunning"></textarea>
+            </td>
+            <td>
+              <input
+                [(ngModel)]="c.expectedFile"
+                (ngModelChange)="onCasesChanged()"
+                [disabled]="isRunning"
+                placeholder="README.md" />
+            </td>
+            <td>
+              <input
+                class="topk"
+                [(ngModel)]="c.topK"
+                (ngModelChange)="onCasesChanged()"
+                [disabled]="isRunning"
+                type="number"
+                min="1"
+                max="10" />
+            </td>
+            <td>
+              <button class="danger ghost" (click)="removeCase(c.id)" [disabled]="isRunning">Remove</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="results" *ngIf="results.length > 0">
+    <h3>Results</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Status</th>
+            <th>Recall Hit</th>
+            <th>Chat Hit</th>
+            <th>Expected</th>
+            <th>Top Recall File</th>
+            <th>Provider / Model</th>
+            <th>Time</th>
+            <th>Detail</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let c of cases; index as i">
+            <ng-container *ngIf="resultFor(c.id) as r">
+              <td>{{ i + 1 }}</td>
+              <td><span class="badge" [class]="r.status">{{ r.status }}</span></td>
+              <td>{{ r.recallHit ? 'yes' : 'no' }}</td>
+              <td>{{ r.chatHit ? 'yes' : 'no' }}</td>
+              <td>{{ r.expectedFile || 'n/a' }}</td>
+              <td>{{ r.recallTopFile || 'n/a' }}</td>
+              <td>{{ r.providerModel || 'n/a' }}</td>
+              <td>{{ r.durationMs }}ms</td>
+              <td>{{ r.detail }}</td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

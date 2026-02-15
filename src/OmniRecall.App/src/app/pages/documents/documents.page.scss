@@ -1,0 +1,150 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: end;
+}
+
+.hint {
+  margin: 0;
+  color: var(--tone-muted);
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 290px 1fr;
+  gap: 1rem;
+}
+
+.metrics {
+  border: 1px solid var(--tone-border);
+  border-radius: 0.9rem;
+  padding: 0.75rem 0.9rem;
+  background: color-mix(in srgb, var(--tone-panel) 90%, #fff);
+}
+
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.4rem 0.8rem;
+}
+
+.metric-grid p {
+  margin: 0;
+}
+
+.docs-list,
+.details {
+  border: 1px solid var(--tone-border);
+  border-radius: 0.9rem;
+  padding: 0.85rem;
+  background: color-mix(in srgb, var(--tone-panel) 92%, white);
+}
+
+.docs-list ul,
+.chunks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.55rem;
+}
+
+.doc-btn {
+  width: 100%;
+  text-align: left;
+  border: 1px solid var(--tone-border);
+  border-radius: 0.75rem;
+  padding: 0.65rem;
+  background: #fff;
+  cursor: pointer;
+  display: grid;
+  gap: 0.2rem;
+}
+
+.doc-btn.active {
+  border-color: color-mix(in srgb, var(--tone-accent) 70%, #fff);
+  background: color-mix(in srgb, var(--tone-accent) 10%, #fff);
+}
+
+.doc-btn span {
+  color: var(--tone-muted);
+  font-size: 0.9rem;
+}
+
+.details-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  border: 0;
+  border-radius: 999px;
+  padding: 0.55rem 0.9rem;
+  background: linear-gradient(120deg, var(--tone-accent), var(--tone-accent-2));
+  color: #102118;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button.ghost {
+  background: #fff;
+  border: 1px solid var(--tone-border);
+  color: var(--tone-text);
+}
+
+button.danger {
+  background: #ffd7d7;
+  color: #6b1b1b;
+}
+
+.chunks li {
+  border: 1px solid var(--tone-border);
+  border-radius: 0.75rem;
+  padding: 0.7rem;
+  background: #fff;
+}
+
+.chunks header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.chunks p {
+  margin: 0.45rem 0 0;
+}
+
+.error {
+  margin: 0;
+  color: #b12222;
+}
+
+.ok {
+  margin: 0;
+  color: #1e6f42;
+}
+
+.empty {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+}

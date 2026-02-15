@@ -1,0 +1,34 @@
+<section class="panel">
+  <h2>Ingest Document</h2>
+  <p class="hint">Upload `.pdf`, `.txt`, `.md`, or `.markdown` files into the recall index.</p>
+
+  <div class="form-grid">
+    <label class="field">
+      <span>Source Type</span>
+      <select [(ngModel)]="sourceType">
+        <option value="file">file</option>
+        <option value="url">url</option>
+        <option value="note">note</option>
+      </select>
+    </label>
+
+    <label class="field">
+      <span>File</span>
+      <input type="file" (change)="onFilePicked($event)" />
+    </label>
+  </div>
+
+  <button (click)="upload()" [disabled]="isSubmitting">
+    {{ isSubmitting ? 'Uploading...' : 'Upload' }}
+  </button>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <article class="result" *ngIf="result as r">
+    <h3>Stored</h3>
+    <p><strong>Document:</strong> {{ r.documentId }}</p>
+    <p><strong>File:</strong> {{ r.fileName }}</p>
+    <p><strong>Chunks:</strong> {{ r.chunkCount }}</p>
+    <p><strong>Blob:</strong> {{ r.blobPath }}</p>
+  </article>
+</section>

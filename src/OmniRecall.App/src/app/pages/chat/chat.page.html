@@ -1,0 +1,34 @@
+<section class="panel">
+  <h2>Grounded Chat</h2>
+  <p class="hint">Chat answer is grounded in retrieved snippets with citations.</p>
+
+  <div class="toolbar">
+    <textarea [(ngModel)]="prompt" rows="4" placeholder="What architecture decision did we make for ingestion?"></textarea>
+    <div class="row">
+      <input class="topk" [(ngModel)]="topK" type="number" min="1" max="10" />
+      <button (click)="ask()" [disabled]="isLoading">
+        {{ isLoading ? 'Thinking...' : 'Ask' }}
+      </button>
+    </div>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <article class="answer" *ngIf="result as r">
+    <header>
+      <strong>Answer</strong>
+      <span>{{ r.provider }} / {{ r.model }}</span>
+    </header>
+    <div class="answer-content" [innerHTML]="formattedAnswerHtml"></div>
+  </article>
+
+  <ul class="citations" *ngIf="result?.citations?.length">
+    <li *ngFor="let c of result!.citations; index as i">
+      <header>
+        <strong>[{{ i + 1 }}] {{ c.fileName }}</strong>
+        <span>chunk {{ c.chunkIndex }}</span>
+      </header>
+      <p>{{ c.snippet }}</p>
+    </li>
+  </ul>
+</section>

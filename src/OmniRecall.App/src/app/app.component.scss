@@ -1,0 +1,74 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+
+.shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 85% -10%, rgba(255, 190, 92, 0.2), transparent 35%),
+    radial-gradient(circle at 10% -20%, rgba(43, 195, 184, 0.16), transparent 40%);
+  color: var(--tone-text);
+}
+
+.topbar {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.2rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  align-items: end;
+  border-bottom: 1px solid color-mix(in srgb, var(--tone-border) 85%, #ffffff);
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+}
+
+.brand p {
+  margin: 0.25rem 0 0;
+  color: var(--tone-muted);
+  font-size: 0.95rem;
+}
+
+nav {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+nav a {
+  text-decoration: none;
+  color: var(--tone-muted);
+  border: 1px solid var(--tone-border);
+  border-radius: 999px;
+  padding: 0.45rem 0.85rem;
+  font-weight: 600;
+  transition: all 180ms ease;
+}
+
+nav a:hover {
+  color: var(--tone-text);
+  border-color: color-mix(in srgb, var(--tone-accent) 70%, #fff);
+}
+
+nav a.active {
+  color: #102118;
+  border-color: transparent;
+  background: linear-gradient(120deg, var(--tone-accent), var(--tone-accent-2));
+}
+
+.content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 1.1rem 1rem 2rem;
+}
+
+@media (max-width: 780px) {
+  .topbar {
+    flex-direction: column;
+    align-items: start;
+  }
+}

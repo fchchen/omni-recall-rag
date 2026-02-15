@@ -1,0 +1,24 @@
+<section class="panel">
+  <h2>Recall Search</h2>
+  <p class="hint">Hybrid retrieval over your chunks.</p>
+
+  <div class="toolbar">
+    <input [(ngModel)]="query" placeholder="What did we decide for API hosting?" />
+    <input class="topk" [(ngModel)]="topK" type="number" min="1" max="10" />
+    <button (click)="search()" [disabled]="isLoading">
+      {{ isLoading ? 'Searching...' : 'Search' }}
+    </button>
+  </div>
+
+  <p class="error" *ngIf="error">{{ error }}</p>
+
+  <ul class="citations" *ngIf="citations.length > 0">
+    <li *ngFor="let c of citations; index as i">
+      <header>
+        <strong>[{{ i + 1 }}] {{ c.fileName }}</strong>
+        <span>score {{ c.score | number: '1.2-4' }}</span>
+      </header>
+      <p>{{ c.snippet }}</p>
+    </li>
+  </ul>
+</section>

@@ -1,0 +1,58 @@
+.panel {
+  display: grid;
+  gap: 1rem;
+}
+
+.hint {
+  margin: 0;
+  color: var(--tone-muted);
+}
+
+.form-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+input,
+select {
+  border: 1px solid var(--tone-border);
+  border-radius: 0.75rem;
+  padding: 0.6rem 0.75rem;
+  font: inherit;
+  background: var(--tone-panel);
+  color: var(--tone-text);
+}
+
+button {
+  justify-self: start;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.65rem 1rem;
+  background: linear-gradient(120deg, var(--tone-accent), var(--tone-accent-2));
+  color: #0c0f1a;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+button[disabled] {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.error {
+  margin: 0;
+  color: #ff7c7c;
+}
+
+.result {
+  border: 1px solid var(--tone-border);
+  border-radius: 0.85rem;
+  padding: 1rem;
+  background: color-mix(in srgb, var(--tone-panel) 92%, white);
+}
