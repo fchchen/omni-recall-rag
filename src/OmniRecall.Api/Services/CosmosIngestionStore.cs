@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.Azure.Cosmos;
 using OmniRecall.Api.Data.Models;
 using System.Net;
@@ -30,7 +31,13 @@ public sealed class CosmosIngestionStore : IIngestionStore, IDisposable
         if (string.IsNullOrWhiteSpace(chunksContainerName))
             chunksContainerName = "chunks";
 
-        _client = new CosmosClient(connectionString);
+        _client = new CosmosClient(connectionString, new CosmosClientOptions
+        {
+            UseSystemTextJsonSerializerWithOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            }
+        });
         var database = _client.GetDatabase(databaseName);
         _documentsContainer = database.GetContainer(documentsContainerName);
         _chunksContainer = database.GetContainer(chunksContainerName);

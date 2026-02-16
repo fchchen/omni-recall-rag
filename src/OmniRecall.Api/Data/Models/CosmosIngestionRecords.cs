@@ -1,8 +1,11 @@
+using System.Text.Json.Serialization;
+
 namespace OmniRecall.Api.Data.Models;
 
 public sealed class CosmosDocumentRecord
 {
     public string Id { get; init; } = string.Empty;
+    [JsonPropertyName("PartitionKey")]
     public string PartitionKey { get; init; } = "user:default";
     public string Type { get; init; } = "document";
     public string FileName { get; init; } = string.Empty;
@@ -16,6 +19,7 @@ public sealed class CosmosDocumentRecord
 public sealed class CosmosChunkRecord
 {
     public string Id { get; init; } = string.Empty;
+    [JsonPropertyName("PartitionKey")]
     public string PartitionKey { get; init; } = "user:default";
     public string Type { get; init; } = "chunk";
     public string DocumentId { get; init; } = string.Empty;
