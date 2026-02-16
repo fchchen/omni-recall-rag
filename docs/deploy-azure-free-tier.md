@@ -22,7 +22,7 @@ Optional data services for durable storage:
 
 ## 2) Configure API app settings (App Service)
 
-In App Service -> Configuration -> Application settings, add what you use:
+In App Service -> Environment Variables -> App settings, add what you use:
 
 - `Gemini__ApiKey`
 - `Gemini__Model`
