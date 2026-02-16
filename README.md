@@ -4,13 +4,25 @@ Personal AI memory system: ingest documents, ask questions, get cited answers gr
 
 ## Demo
 
-### Frontend Navigation
+### Grounded Chat
 
-https://github.com/fchchen/omni-recall-rag/raw/main/docs/frontend-navigation.webm
+Ask questions and get AI answers grounded in your documents with citation markers.
 
-### Chat & Recall in Action
+![Chat demo](docs/screenshot-chat.png)
 
-https://github.com/fchchen/omni-recall-rag/raw/main/docs/demo-chat-recall.webm
+### Recall Search
+
+Hybrid retrieval returns ranked citations with relevance scores.
+
+![Recall demo](docs/screenshot-recall.png)
+
+### Frontend Pages
+
+| Chat | Documents | Upload |
+|------|-----------|--------|
+| ![Chat](docs/screenshot-nav-chat.png) | ![Documents](docs/screenshot-nav-documents.png) | ![Upload](docs/screenshot-nav-upload.png) |
+
+> Video walkthroughs: [Frontend Navigation](docs/frontend-navigation.webm) | [Chat & Recall Demo](docs/demo-chat-recall.webm)
 
 ## Features
 
