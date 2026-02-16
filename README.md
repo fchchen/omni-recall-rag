@@ -6,15 +6,11 @@ Personal AI memory system: ingest documents, ask questions, get cited answers gr
 
 ### Frontend Navigation
 
-https://github.com/user-attachments/assets/frontend-navigation.webm
-
-<video src="docs/frontend-navigation.webm" width="100%" controls></video>
+https://github.com/fchchen/omni-recall-rag/raw/main/docs/frontend-navigation.webm
 
 ### Chat & Recall in Action
 
-https://github.com/user-attachments/assets/demo-chat-recall.webm
-
-<video src="docs/demo-chat-recall.webm" width="100%" controls></video>
+https://github.com/fchchen/omni-recall-rag/raw/main/docs/demo-chat-recall.webm
 
 ## Features
 
